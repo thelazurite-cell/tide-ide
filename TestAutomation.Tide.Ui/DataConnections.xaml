@@ -1,0 +1,73 @@
+﻿<dockingLibrary:DockableContent x:Class="TAF.AutomationTool.Ui.DataConnections"
+                                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                xmlns:local="clr-namespace:TAF.AutomationTool.Ui"
+                                xmlns:programConfiguration="clr-namespace:TestAutomation.SolutionHandler.ProgramConfiguration;assembly=TestAutomation.SolutionHandler"
+                                xmlns:fa="http://schemas.fontawesome.io/icons/"
+                                xmlns:core="clr-namespace:TestAutomation.SolutionHandler.Core;assembly=TestAutomation.SolutionHandler"
+                                xmlns:dockingLibrary="clr-namespace:DockingLibrary;assembly=DockingLibrary"
+                                xmlns:dataBase="clr-namespace:TestAutomation.Tide.DataBase;assembly=TestAutomation.Tide.DataBase"
+                                mc:Ignorable="d"
+                                d:DesignHeight="300" d:DesignWidth="300" Title="Data Connections" Background="White">
+    <Window.Resources>
+        <DataTemplate x:Key="level6" DataType="{x:Type dataBase:DbView}">
+            <StackPanel Orientation="Horizontal">
+                <fa:ImageAwesome Icon="{Binding Icon}" Height="12" Width="12" />
+                <TextBlock Margin="5" FontFamily="Consolas" Text="{Binding FriendlyName}" />
+            </StackPanel>
+        </DataTemplate>
+        <HierarchicalDataTemplate x:Key="level5" DataType="{x:Type dataBase:DbView}"
+                                  ItemsSource="{Binding Children}"
+                                  ItemTemplate="{StaticResource level6}">
+            <StackPanel Orientation="Horizontal">
+                <fa:ImageAwesome Icon="{Binding Icon}" Height="12" Width="12" />
+                <TextBlock Margin="5" Text="{Binding FriendlyName}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate x:Key="level4" DataType="{x:Type dataBase:DbView}"
+                                  ItemsSource="{Binding Children}"
+                                  ItemTemplate="{StaticResource level5}">
+            <StackPanel Orientation="Horizontal">
+                <fa:ImageAwesome Icon="{Binding Icon}" Height="12" Width="12" />
+                <TextBlock Margin="5" Text="{Binding FriendlyName}" />
+                <StackPanel.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Name="ViewTable" Click="MenuItem_OnClick" Header="View Table Data" />
+                        <MenuItem Name="CreateGenerator" Header="Create Data Generator"/>
+                    </ContextMenu>
+                </StackPanel.ContextMenu>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate x:Key="level3" DataType="{x:Type dataBase:DbView}"
+                                  ItemsSource="{Binding Children}"
+                                  ItemTemplate="{StaticResource level4}">
+            <StackPanel Orientation="Horizontal">
+                <fa:ImageAwesome Icon="{Binding Icon}" Height="12" Width="12" />
+                <TextBlock Margin="5" Text="{Binding FriendlyName}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate x:Key="level2" DataType="{x:Type dataBase:DbView}"
+                                  ItemsSource="{Binding Children}"     
+                                  ItemTemplate="{StaticResource level3}">
+            <StackPanel Orientation="Horizontal">
+                <fa:ImageAwesome Icon="{Binding Icon}" Height="12" Width="12" />
+                <TextBlock Margin="5" Text="{Binding FriendlyName}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <HierarchicalDataTemplate x:Key="level1" DataType="{x:Type dataBase:DbView}"
+                                  ItemsSource="{Binding Children}"
+                                  ItemTemplate="{StaticResource level2}">
+            <StackPanel Orientation="Horizontal">
+                <fa:ImageAwesome Icon="{Binding Icon}" Height="8" Width="8" />
+                <TextBlock Margin="5" Text="{Binding FriendlyName}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+    </Window.Resources>
+    <ScrollViewer x:Name="ScrollViewer" HorizontalScrollBarVisibility="Auto" Background="White"
+                  PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">
+        <TreeView x:Name="DataList" HorizontalAlignment="Stretch" MouseDoubleClick="DataList_OnMouseDoubleClick" Background="White"
+                  ItemTemplate="{StaticResource level1}" />
+    </ScrollViewer>
+</dockingLibrary:DockableContent>

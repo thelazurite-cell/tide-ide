@@ -1,0 +1,71 @@
+﻿<local:ClosableTabItem x:Class="TAF.AutomationTool.Ui.CustomElements.FileEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:TAF.AutomationTool.Ui.CustomElements"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="FileEditor_OnLoaded">
+    <Grid VerticalAlignment="Stretch" MouseLeave="UIElement_OnMouseLeave" Background="#D3CDCD" Margin="0" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40px" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ToolBar Background="#D3CDCD" AllowDrop="False" Name="FileToolbar" ToolBarTray.IsLocked="True" Margin="0" Padding="0">
+            <Button Name="Save" Click="Save_OnClick">
+                <StackPanel Orientation="Horizontal" Margin="5,0">
+                    <TextBlock>
+                        <fa:ImageAwesome Icon="Save" Width="16" Height="16" Opacity="0.7" />
+                    </TextBlock>
+                    <!-- <TextBlock>Save</TextBlock> -->
+                </StackPanel>
+            </Button>
+            <Separator />
+            <Button Command="Cut">
+                <StackPanel Orientation="Horizontal" Margin="5,0">
+                    <TextBlock>
+                        <fa:ImageAwesome Icon="Cut" Width="16" Height="16" Opacity="0.7" />
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+            <Button Command="Copy">
+                <StackPanel Orientation="Horizontal" Margin="5,0">
+                    <TextBlock>
+                        <fa:ImageAwesome Icon="Copy" Width="16" Height="16" Opacity="0.7" />
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+            <Button Command="Paste">
+                <StackPanel Orientation="Horizontal" Margin="5,0">
+                    <TextBlock>
+                        <fa:ImageAwesome Icon="Paste" Width="16" Height="16" Opacity="0.7" />
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+            <Separator />
+            <Button Command="Undo">
+                <StackPanel Orientation="Horizontal" Margin="5,0">
+                    <TextBlock>
+                        <fa:ImageAwesome Icon="Undo" Width="16" Height="16" Opacity="0.7" />
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+            <Button Command="Redo">
+                <StackPanel Orientation="Horizontal" Margin="5,0">
+                    <TextBlock>
+                        <fa:ImageAwesome Icon="Undo" FlipOrientation="Horizontal" Width="16" Height="16" Opacity="0.7" />
+                    </TextBlock>
+                </StackPanel>
+            </Button>
+        </ToolBar>
+        <avalonedit:TextEditor 
+            Grid.Row="1"
+            Name="TextEditor"
+            FontFamily="Consolas"
+            FontSize="10pt"
+            SyntaxHighlighting="C#"
+            ShowLineNumbers="True" VerticalContentAlignment="Stretch" MouseMove="TextEditor_OnDragEnter" PreviewMouseLeftButtonUp="TextEditor_OnPreviewMouseLeftButtonUp" MouseLeave="TextEditor_OnMouseLeave" HorizontalContentAlignment="Stretch" PreviewKeyUp="TextEditor_OnKeyDown" />
+    </Grid>
+</local:ClosableTabItem>

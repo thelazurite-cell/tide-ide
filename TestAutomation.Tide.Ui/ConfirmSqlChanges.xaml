@@ -1,0 +1,181 @@
+﻿<controls:SharpWindow x:Class="TAF.AutomationTool.Ui.ConfirmSqlChanges"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TAF.AutomationTool.Ui"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:dataBase="clr-namespace:TestAutomation.Tide.DataBase;assembly=TestAutomation.Tide.DataBase"
+        xmlns:controls="clr-namespace:TestAutomation.Tide.Ui.Controls;assembly=TestAutomation.Tide.Ui.Controls" Background="#D3CDCD"
+        mc:Ignorable="d"
+        Title="ConfirmSqlChanges" Height="450" Width="800" WindowStartupLocation="CenterOwner" ContentRendered="ConfirmSqlChanges_OnContentRendered">
+    <Window.Resources>
+        <Style x:Key="NoSelectionView" TargetType="ListView">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style x:Key="NoSelection" TargetType="ListViewItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <ContentPresenter x:Name="lvi" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Style.Triggers>
+                <Trigger Property="IsSelected"
+                         Value="True">
+                    <Setter Property="Background"
+                            Value="{x:Null}" />
+                    <Setter Property="BorderBrush"
+                            Value="{x:Null}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <DataTemplate x:Key="Updates" DataType="dataBase:SqlDataUpdate">
+            <StackPanel>
+                <TextBlock Text="{Binding Property}" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal">
+
+                    <fa:ImageAwesome Icon="Edit" Foreground="DarkOliveGreen" Width="24" Height="24" />
+                    <TextBlock Text="{Binding ColumnOriginalValue}" VerticalAlignment="Center" Margin="5,0,5,0"
+                               Foreground="DarkRed">
+                        <TextBlock.TextDecorations>
+                            <TextDecoration Location="Strikethrough">
+                                <TextDecoration.Pen>
+                                    <Pen Brush="#AA0404" />
+                                </TextDecoration.Pen>
+                            </TextDecoration>
+                        </TextBlock.TextDecorations>
+                    </TextBlock>
+                    <fa:ImageAwesome Icon="ArrowRight" Foreground="DarkOliveGreen" Width="16" Height="16" />
+                    <TextBlock Text="{Binding ColumnValue}" Margin="5,0,5,0" Foreground="DarkOliveGreen"
+                               FontWeight="Bold" VerticalAlignment="Center" />
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="UpdateTemplate">
+            <StackPanel Background="LightBlue">
+                <Label FontWeight="Bold">Updating</Label>
+                <ListView ItemsSource="{Binding Path=Affected}" ItemContainerStyle="{StaticResource NoSelection}"
+                          Style="{StaticResource NoSelectionView}">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+
+                <ScrollViewer Name="ScrollViewer" Grid.Row="1" VerticalContentAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Visible"
+                              PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">
+
+                    <ListView Name="ChangesList" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding Path=Changes}" ItemTemplate="{StaticResource Updates}"
+                              ItemContainerStyle="{StaticResource NoSelection}"
+                              Style="{StaticResource NoSelectionView}" />
+                </ScrollViewer>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="DeleteTemplate">
+            <StackPanel Orientation="Vertical" Background="#E9A3A3">
+                <Label FontWeight="Bold">Deleting</Label>
+                <StackPanel Orientation="Horizontal">
+                    <fa:ImageAwesome Icon="Close" Height="16" Width="16" Margin="5,0,5,0" Foreground="Red" />
+                    <ListView ItemsSource="{Binding Path=Affected}" ItemContainerStyle="{StaticResource NoSelection}"
+                              Style="{StaticResource NoSelectionView}">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                    </ListView>
+                </StackPanel>
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="InsertTemplate">
+            <Grid Background="LightGreen" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel HorizontalAlignment="Stretch">
+                    <Label FontWeight="Bold">Inserting</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="Plus" Foreground="Green" Height="16" Width="16" Margin="5,0,5,0" />
+                        <ListView ItemsSource="{Binding Path=Affected}"
+                                  ItemContainerStyle="{StaticResource NoSelection}"
+                                  Style="{StaticResource NoSelectionView}">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                        </ListView>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="PersonItemTemplate">
+            <ContentPresenter x:Name="PeoplePresenter"
+                              Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
+                              ContentTemplate="{StaticResource UpdateTemplate}" />
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsInserting}"
+                             Value="True">
+                    <Setter TargetName="PeoplePresenter"
+                            Property="ContentTemplate"
+                            Value="{StaticResource InsertTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsDeleting}"
+                             Value="True">
+                    <Setter TargetName="PeoplePresenter"
+                            Property="ContentTemplate"
+                            Value="{StaticResource DeleteTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsUpdating}"
+                             Value="True">
+                    <Setter TargetName="PeoplePresenter"
+                            Property="ContentTemplate"
+                            Value="{StaticResource UpdateTemplate}" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="5*" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="Are you sure you want to save these database changes? " />
+            <Label Content="Changes affect: " />
+            <Label Content="{Binding Path=Context.Table.Name}" />
+        </StackPanel>
+        <ScrollViewer Name="ScrollViewer" Grid.Row="1" VerticalContentAlignment="Stretch" VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch" VerticalScrollBarVisibility="Visible"
+                      PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel">
+            <ListView Name="ChangesList" VerticalContentAlignment="Stretch" HorizontalAlignment="Stretch"
+                      ItemsSource="{Binding Path=Modifications}" ItemTemplate="{StaticResource PersonItemTemplate}" />
+        </ScrollViewer>
+        <StackPanel Grid.Row="2" DockPanel.Dock="Bottom" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Orientation="Horizontal">
+            <CheckBox Margin="5,2">Create Script</CheckBox>
+            <CheckBox Margin="5,2" IsChecked="True">Persist DB changes</CheckBox>
+        </StackPanel>
+        <StackPanel Grid.Row="2" DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal"
+                    VerticalAlignment="Center">
+            <Button Margin="5,0,5,0" Name="Confirm" Click="Confirm_OnClick" Style="{StaticResource GenericButton}">
+                <fa:FontAwesome FontSize="16" Icon="Check" Foreground="Green" Height="16" Width="16" />
+            </Button>
+            <Button Margin="5,0,5,0" Name="Cancel" Click="Cancel_OnClick" VerticalContentAlignment="Center" Style="{StaticResource GenericButton}"
+                    HorizontalContentAlignment="Center">
+                <fa:FontAwesome FontSize="16" Icon="Close" Foreground="Red" Width="16" Height="16" />
+            </Button>
+        </StackPanel>
+    </Grid>
+</controls:SharpWindow>

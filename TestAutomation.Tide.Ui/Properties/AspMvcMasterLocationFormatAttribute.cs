@@ -1,0 +1,15 @@
+﻿using System;
+
+namespace TAF.AutomationTool.Ui.Properties
+{
+    [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
+    public sealed class AspMvcMasterLocationFormatAttribute : Attribute
+    {
+        public AspMvcMasterLocationFormatAttribute([NotNull] string format)
+        {
+            this.Format = format;
+        }
+
+        [NotNull] public string Format { get; private set; }
+    }
+}

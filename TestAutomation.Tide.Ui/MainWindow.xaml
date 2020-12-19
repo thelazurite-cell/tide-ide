@@ -1,0 +1,34 @@
+﻿<controls:SharpWindow x:Class="TAF.AutomationTool.Ui.MainWindow"
+                      x:Name="Window"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:controls="clr-namespace:TestAutomation.Tide.Ui.Controls;assembly=TestAutomation.Tide.Ui.Controls"
+                      FontFamily="{DynamicResource {x:Static SystemFonts.MessageFontFamily}}"
+                      WindowStartupLocation="CenterScreen" Background="Transparent"
+                      Title="Welcome to TIDE"
+                      Height="350"
+                      Width="525">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40*" />
+            <ColumnDefinition Width="50*" />
+            <ColumnDefinition Width="40*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <Label HorizontalAlignment="Center">Welcome to TIDE</Label>
+            <Button Name="OpenProject" Click="OpenProject_OnClick" Style="{StaticResource GenericButton}">Open Project</Button>
+
+            <Separator Height="20" BorderThickness="0" />
+
+            <ScrollViewer VerticalContentAlignment="Stretch" Height="100">
+                <ListBox />
+            </ScrollViewer>
+
+            <Separator Height="20" BorderThickness="0" />
+
+            <Button Style="{StaticResource GenericButton}">Settings</Button>
+        </StackPanel>
+    </Grid>
+</controls:SharpWindow>

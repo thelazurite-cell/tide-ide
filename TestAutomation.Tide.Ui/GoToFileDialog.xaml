@@ -1,0 +1,55 @@
+﻿<Window x:Class="TAF.AutomationTool.Ui.GoToFileDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:TAF.AutomationTool.Ui"
+        xmlns:core="clr-namespace:TestAutomation.SolutionHandler.Core;assembly=TestAutomation.SolutionHandler"
+        xmlns:fa="http://schemas.fontawesome.io/icons/" 
+        xmlns:activities="clr-namespace:TAF.AutomationTool.Ui.Activities"
+        mc:Ignorable="d"
+        MinWidth="100"
+        Height="Auto"
+        MaxHeight="480"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        VerticalAlignment="Stretch" HorizontalAlignment="Stretch" SizeToContent="WidthAndHeight"
+        ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <DataTemplate x:Key="ListTemplate" DataType="core:ProjectNavigationItem">
+            <StackPanel Orientation="Horizontal" MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
+                <fa:ImageAwesome Icon="{Binding Path=Icon}" Width="32" Height="32"/>
+                <StackPanel Orientation="Vertical">
+                    <Label Content="{Binding Path=Name}" ToolTip="{Binding Path=Absoloute}"></Label>
+                    <Label Content="{Binding Path=Absoloute}" ToolTip="{Binding Path=Absoloute}" FontSize="10" Foreground="DarkGray" FontWeight="Bold"></Label>
+                </StackPanel>
+            </StackPanel>            
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25px" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBox Name="SearchTerm" PreviewKeyUp="SearchTerm_OnPreviewKeyUp"></TextBox>
+        <TextBlock Grid.Row="0" IsHitTestVisible="False" Text="Enter Search Term Here" VerticalAlignment="Center" HorizontalAlignment="Left"  Foreground="DarkGray">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Text, ElementName=SearchTerm}" Value="">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <ListBox Grid.Row="1" Height="Auto" MaxHeight="455" Name="Result" Visibility="Collapsed"  ItemTemplate="{StaticResource ListTemplate}" />
+    </Grid>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static activities:GoToFileCommands.CloseDialogCommand}"
+                        Executed="CloseCommandBinding_OnExecuted" />
+        <CommandBinding Command="{x:Static activities:GoToFileCommands.SelectFileCommand}"
+                        Executed="SelectFileCommandBinding_OnExecuted" />
+    </Window.CommandBindings>
+</Window>

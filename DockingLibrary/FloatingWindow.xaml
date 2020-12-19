@@ -1,0 +1,13 @@
+﻿<controls:SharpWindow x:Class="DockingLibrary.FloatingWindow" Style="{StaticResource ThisWindow}"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:TestAutomation.Tide.Ui.Controls;assembly=TestAutomation.Tide.Ui.Controls"
+    Title="DockingLibrary" Height="300" Width="300" IsMaximizable="False" IsMinimizable="False" IsClosable="True" ShowInTaskbar="False" Loaded="OnLoaded">
+    <controls:SharpWindow.ToolbarTemplate>
+        <Button>K</Button>
+    </controls:SharpWindow.ToolbarTemplate>
+    <Grid>
+        
+    </Grid>
+</controls:SharpWindow>
+

@@ -1,0 +1,434 @@
+<custom:Pane x:Class="DockingLibrary.DockablePane"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:custom="clr-namespace:DockingLibrary"
+             xmlns:fa="http://schemas.fontawesome.io/icons/" Background="#D3CDCD">
+    <custom:Pane.Resources>
+
+        <Style x:Key="ToolBarThumbStyle"
+               TargetType="{x:Type Thumb}">
+            <Setter Property="OverridesDefaultStyle"
+                    Value="true" />
+            <Setter Property="Cursor"
+                    Value="SizeAll" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border Background="Transparent"
+                                SnapsToDevicePixels="True">
+                            <Rectangle>
+                                <Rectangle.Fill>
+                                    <DrawingBrush Viewport="0,0,4,4"
+                                                  ViewportUnits="Absolute"
+                                                  Viewbox="0,0,8,8"
+                                                  ViewboxUnits="Absolute"
+                                                  TileMode="Tile">
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup>
+                                                <GeometryDrawing Brush="#AAA"
+                                                                 Geometry="M 4 4 L 4 8 L 8 8 L 8 4 z" />
+                                            </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="TabItemFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle SnapsToDevicePixels="True" Stroke="Black" StrokeDashArray="1 2" StrokeThickness="1"
+                                   Margin="3,3,3,1" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="GridSplitter">
+            <Setter Property="Background" Value="#D3CDCD" />
+        </Style>
+        <SolidColorBrush x:Key="TabControlNormalBorderBrush" Color="#919B9C" />
+        <LinearGradientBrush x:Key="TabItemNormalBackground" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFFFFFFF" Offset="0" />
+            <GradientStop Color="#FFECEBE6" Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="TabItemHotBorderBrush" Color="#FFE68B2C" />
+        <SolidColorBrush x:Key="TabItemHotBorderBackround" Color="#FFFFC73C" />
+        <LinearGradientBrush x:Key="TabItemHotBackground" EndPoint="0,1" StartPoint="0,0">
+            <GradientStop Color="#FFFFFFFF" Offset="0" />
+            <GradientStop Color="#FFECEBE6" Offset="1" />
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="TabItemSelectedBorderBrush" Color="#FFE68B2C" />
+        <SolidColorBrush x:Key="TabItemSelectedBorderBackround" Color="#FFFFC73C" />
+        <SolidColorBrush x:Key="TabItemSelectedBackground" Color="#FFFCFCFE" />
+        <SolidColorBrush x:Key="TabItemDisabledBackground" Color="#FFF5F4EA" />
+        <SolidColorBrush x:Key="TabItemDisabledBorderBrush" Color="#FFC9C7BA" />
+        <Style x:Key="DockablePaneTabItemStyle" TargetType="{x:Type TabItem}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource TabItemFocusVisual}" />
+            <Setter Property="Padding" Value="12,2,12,2" />
+            <Setter Property="BorderThickness" Value="1,1,1,0" />
+            <Setter Property="BorderBrush" Value="{StaticResource TabControlNormalBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+            <Setter Property="Background" Value="{StaticResource TabItemNormalBackground}" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border SnapsToDevicePixels="true">
+                            <Grid Margin="0,0,1,0">
+                                <Grid x:Name="Transform">
+                                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3,3,0,0">
+                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                          HorizontalAlignment="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                                          VerticalAlignment="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                                          ContentSource="Header" RecognizesAccessKey="True"
+                                                          PreviewMouseDown="OnTabItemMouseDown"
+                                                          PreviewMouseUp="OnTabItemMouseUp"
+                                                          PreviewMouseMove="OnTabItemMouseMove" Margin="2">
+                                            <ContentPresenter.LayoutTransform>
+                                                <TransformGroup>
+                                                    <RotateTransform Angle="180" />
+                                                    <ScaleTransform ScaleX="-1" />
+                                                </TransformGroup>
+                                            </ContentPresenter.LayoutTransform>
+                                        </ContentPresenter>
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background">
+                                                    <Setter.Value>
+                                                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                                            <GradientStop Color="#F3F3F3" Offset="0" />
+                                                            <GradientStop Color="#EBEBEB" Offset="0.5" />
+                                                            <GradientStop Color="#DDDDDD" Offset="1" />
+                                                            <GradientStop Color="#ABABAB" Offset="1" />
+                                                        </LinearGradientBrush>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ColorAnimationUsingKeyFrames
+                                                                    Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[3].(GradientStop.Color)">
+                                                                    <EasingColorKeyFrame KeyTime="0" Value="#DDDDDD" />
+                                                                </ColorAnimationUsingKeyFrames>
+                                                                <DoubleAnimationUsingKeyFrames
+                                                                    Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[3].(GradientStop.Offset)">
+                                                                    <EasingDoubleKeyFrame KeyTime="0" Value="0.962" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                                <DoubleAnimationUsingKeyFrames
+                                                                    Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[2].(GradientStop.Offset)">
+                                                                    <EasingDoubleKeyFrame KeyTime="0" Value="0.828">
+                                                                        <EasingDoubleKeyFrame.EasingFunction>
+                                                                            <CircleEase EasingMode="EaseInOut" />
+                                                                        </EasingDoubleKeyFrame.EasingFunction>
+                                                                    </EasingDoubleKeyFrame>
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </EventTrigger>
+                                                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                                                        <BeginStoryboard>
+                                                            <Storyboard>
+                                                                <ColorAnimationUsingKeyFrames
+                                                                    Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[3].(GradientStop.Color)">
+                                                                    <EasingColorKeyFrame KeyTime="0" Value="#93AFD8" />
+                                                                    <EasingColorKeyFrame KeyTime="0:0:0.2"
+                                                                                         Value="#89ABDC" />
+                                                                    <EasingColorKeyFrame KeyTime="0:0:0.4"
+                                                                                         Value="#82A6DC" />
+                                                                    <EasingColorKeyFrame KeyTime="0:0:0.6"
+                                                                                         Value="sc#1, 0.3277781, 0.4286905, 0.651405632" />
+                                                                    <EasingColorKeyFrame KeyTime="0:0:0.8"
+                                                                                         Value="#82A6DC" />
+                                                                    <EasingColorKeyFrame KeyTime="0:0:1.0"
+                                                                                         Value="#82A6DC" />
+                                                                </ColorAnimationUsingKeyFrames>
+                                                                <DoubleAnimationUsingKeyFrames
+                                                                    Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[3].(GradientStop.Offset)">
+                                                                    <EasingDoubleKeyFrame KeyTime="0" Value="0.962" />
+                                                                    <EasingDoubleKeyFrame KeyTime="0:0:0.4"
+                                                                                          Value="0.962" />
+                                                                    <EasingDoubleKeyFrame KeyTime="0:0:0.6"
+                                                                                          Value="0.958" />
+                                                                    <EasingDoubleKeyFrame KeyTime="0:0:1.0"
+                                                                                          Value="0.962" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                                <DoubleAnimationUsingKeyFrames
+                                                                    Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[2].(GradientStop.Offset)">
+                                                                    <EasingDoubleKeyFrame KeyTime="0" Value="0.828">
+                                                                        <EasingDoubleKeyFrame.EasingFunction>
+                                                                            <CircleEase EasingMode="EaseInOut" />
+                                                                        </EasingDoubleKeyFrame.EasingFunction>
+                                                                    </EasingDoubleKeyFrame>
+                                                                    <EasingDoubleKeyFrame KeyTime="0:0:0.4"
+                                                                                          Value="0.828" />
+                                                                    <EasingDoubleKeyFrame KeyTime="0:0:0.6"
+                                                                                          Value="0.644" />
+                                                                </DoubleAnimationUsingKeyFrames>
+                                                            </Storyboard>
+                                                        </BeginStoryboard>
+                                                    </EventTrigger>
+                                                    <DataTrigger
+                                                        Binding="{Binding RelativeSource={RelativeSource AncestorType=TextBlock, Mode=FindAncestor}, Path=IsMouseOver}"
+                                                        Value="True">
+                                                        <Setter Property="Cursor" Value="Hand" />
+                                                        <DataTrigger.EnterActions>
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <ColorAnimationUsingKeyFrames
+                                                                        Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[3].(GradientStop.Color)">
+                                                                        <EasingColorKeyFrame KeyTime="0"
+                                                                                             Value="#93AFD8" />
+                                                                        <EasingColorKeyFrame KeyTime="0:0:0.2"
+                                                                                             Value="#89ABDC" />
+                                                                        <EasingColorKeyFrame KeyTime="0:0:0.4"
+                                                                                             Value="#82A6DC" />
+                                                                        <EasingColorKeyFrame KeyTime="0:0:0.6"
+                                                                                             Value="sc#1, 0.3277781, 0.4286905, 0.651405632" />
+                                                                        <EasingColorKeyFrame KeyTime="0:0:0.8"
+                                                                                             Value="#82A6DC" />
+                                                                        <EasingColorKeyFrame KeyTime="0:0:1"
+                                                                                             Value="#82A6DC" />
+                                                                    </ColorAnimationUsingKeyFrames>
+                                                                    <DoubleAnimationUsingKeyFrames
+                                                                        Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[3].(GradientStop.Offset)">
+                                                                        <EasingDoubleKeyFrame KeyTime="0" Value="0.962" />
+                                                                        <EasingDoubleKeyFrame KeyTime="0:0:0.4"
+                                                                                              Value="0.962" />
+                                                                        <EasingDoubleKeyFrame KeyTime="0:0:0.6"
+                                                                                              Value="0.958" />
+                                                                        <EasingDoubleKeyFrame KeyTime="0:0:1"
+                                                                                              Value="0.962" />
+                                                                    </DoubleAnimationUsingKeyFrames>
+                                                                    <DoubleAnimationUsingKeyFrames
+                                                                        Storyboard.TargetProperty="(Panel.Background).(GradientBrush.GradientStops)[2].(GradientStop.Offset)">
+                                                                        <EasingDoubleKeyFrame KeyTime="0" Value="0.828">
+                                                                            <EasingDoubleKeyFrame.EasingFunction>
+                                                                                <CircleEase EasingMode="EaseInOut" />
+                                                                            </EasingDoubleKeyFrame.EasingFunction>
+                                                                        </EasingDoubleKeyFrame>
+                                                                        <EasingDoubleKeyFrame KeyTime="0:0:0.4"
+                                                                                              Value="0.828" />
+                                                                        <EasingDoubleKeyFrame KeyTime="0:0:0.6"
+                                                                                              Value="0.644" />
+                                                                        <EasingDoubleKeyFrame KeyTime="0:0:1"
+                                                                                              Value="0.828" />
+                                                                    </DoubleAnimationUsingKeyFrames>
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </DataTrigger.EnterActions>
+
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                    </Border>
+                                </Grid>
+                                <Border BorderThickness="{TemplateBinding BorderThickness}"
+                                        Padding="{TemplateBinding Padding}" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="Panel.ZIndex" Value="1" />
+                                <Setter Property="Background" TargetName="Bd">
+                                    <Setter.Value>
+                                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                            <GradientStop Color="#F3F3F3" Offset="0" />
+                                            <GradientStop Color="#EBEBEB" Offset="0.5" />
+                                            <GradientStop Color="#DDDDDD" Offset="1" />
+                                            <GradientStop Color="#ABABAB" Offset="1" />
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="TabStripPlacement" Value="Bottom">
+                                <Setter Property="LayoutTransform" TargetName="Transform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1" ScaleY="-1" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="TabStripPlacement" Value="Left">
+                                <Setter Property="LayoutTransform" TargetName="Transform">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="-90" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="TabStripPlacement" Value="Right">
+                                <Setter Property="LayoutTransform" TargetName="Transform">
+                                    <Setter.Value>
+                                        <RotateTransform Angle="90" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground"
+                                        Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                <Setter Property="Background" TargetName="Bd"
+                                        Value="{StaticResource TabItemDisabledBackground}" />
+                                <Setter Property="BorderBrush" TargetName="Bd"
+                                        Value="{StaticResource TabItemDisabledBorderBrush}" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true" />
+                                    <Condition Property="TabStripPlacement" Value="Top" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Margin" Value="-2,-2,-2,-1" />
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true" />
+                                    <Condition Property="TabStripPlacement" Value="Bottom" />
+                                </MultiTrigger.Conditions>
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true" />
+                                    <Condition Property="TabStripPlacement" Value="Left" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Margin" Value="-2,-2,-1,-2" />
+                            </MultiTrigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="true" />
+                                    <Condition Property="TabStripPlacement" Value="Right" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="Margin" Value="-1,-2,-2,-2" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="DockableContentsTabControlTemplate" TargetType="{x:Type TabControl}">
+            <Grid x:Name="Grid" KeyboardNavigation.TabNavigation="Local">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="ColumnDefinition0" />
+                    <ColumnDefinition x:Name="ColumnDefinition1" Width="0" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Name="RowDefinition0" Height="*" />
+                    <RowDefinition x:Name="RowDefinition1" Height="Auto" />
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" Grid.Column="0" x:Name="ContentPanel" BorderBrush="#FFD0CEBF"
+                        BorderThickness="0,0,1,1" KeyboardNavigation.TabIndex="2"
+                        KeyboardNavigation.TabNavigation="Local" KeyboardNavigation.DirectionalNavigation="Contained">
+                    <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Border Background="{TemplateBinding Background}" x:Name="Border1">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              x:Name="PART_SelectedContentHost"
+                                              Content="{TemplateBinding SelectedContent}"
+                                              ContentTemplate="{TemplateBinding SelectedContentTemplate}"
+                                              ContentTemplateSelector="{TemplateBinding SelectedContentTemplateSelector}"
+                                              ContentSource="SelectedContent" />
+                        </Border>
+                    </Border>
+                </Border>
+
+                <custom:DockableContentTabItemsPanel IsItemsHost="True" Grid.Row="1" Grid.Column="0" />
+
+            </Grid>
+        </ControlTemplate>
+
+        <Style x:Key="DockingHeaderButtonStyle" TargetType="{x:Type Grid}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Red" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </custom:Pane.Resources>
+    <DockPanel>
+        <Border Name="PaneHeader" Height="18" Width="Auto" DockPanel.Dock="Top" BorderBrush="#FF000000"
+                MouseDown="OnHeaderMouseDown" MouseUp="OnHeaderMouseUp" MouseMove="OnHeaderMouseMove">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1">
+                    <GradientStop Color="#D3CDCD" Offset="0" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <DockPanel Width="Auto" Height="Auto" LastChildFill="True">
+                <Thumb Style="{StaticResource ToolBarThumbStyle}" HorizontalContentAlignment="Stretch" Width="10" />
+                <Grid x:Name="btnClose" PreviewMouseDown="OnBtnCloseMouseDown" Width="16" DockPanel.Dock="Right"
+                      Margin="0,1,0,0" Style="{DynamicResource DockingHeaderButtonStyle}">
+                    <Grid.Background>
+                        <LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1" Opacity="0.3">
+                            <GradientStop Color="Gray" Offset="0" />
+                            <GradientStop Color="DarkGray" Offset="1" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    <fa:ImageAwesome Icon="Close" Foreground="DarkRed" Width="8" Height="8" />
+                </Grid>
+                <Grid x:Name="btnAutoHide" PreviewMouseDown="OnBtnAutoHideMouseDown" Width="16" DockPanel.Dock="Right">
+                    <Grid.Background>
+                        <LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1" Opacity="0.3">
+                            <GradientStop Color="Gray" Offset="0" />
+                            <GradientStop Color="DarkGray" Offset="1" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    <fa:ImageAwesome Icon="ThumbTack" Height="8" Width="8" />
+                </Grid>
+                <Grid x:Name="btnMenu" PreviewMouseDown="OnBtnMenuMouseDown" Width="16" Height="Auto" Margin="0,0,0,0"
+                      DockPanel.Dock="Right">
+                    <Grid.Background>
+                        <LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1" Opacity="0.3">
+                            <GradientStop Color="Gray" Offset="0" />
+                            <GradientStop Color="DarkGray" Offset="1" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    <fa:ImageAwesome Icon="CaretDown" Height="8" Width="8" />
+                    <Grid.ContextMenu>
+                        <ContextMenu IsVisibleChanged="OnBtnMenuPopup">
+                            <MenuItem Name="menuFloatingWindow" Header="Floating window" Click="OnDockingMenu" />
+                            <MenuItem Name="menuDockedWindow" Header="Docked window" Click="OnDockingMenu" />
+                            <MenuItem Name="menuTabbedDocument" Header="Tabbed document" Click="OnDockingMenu" />
+                            <MenuItem Name="menuAutoHide" Header="Auto hide" Click="OnDockingMenu" />
+                            <MenuItem Name="menuClose" Header="Close" Click="OnDockingMenu" />
+                        </ContextMenu>
+                    </Grid.ContextMenu>
+                </Grid>
+                <TextBlock Margin="2,0,0,0" Width="Auto" Height="Auto" Text="Title" TextWrapping="NoWrap"
+                           VerticalAlignment="Center" FontSize="12" x:Name="tbTitle">
+                    <TextBlock.Foreground>
+                        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlTextColorKey}}" />
+                    </TextBlock.Foreground>
+                </TextBlock>
+            </DockPanel>
+        </Border>
+        <Border Width="Auto" Height="Auto" BorderBrush="#FF000000">
+            <Grid Background="Transparent">
+                <ContentPresenter Name="cpClientWindowContent" Visibility="Collapsed" />
+                <TabControl Background="#D3CDCD" Name="tbcContents" Visibility="Collapsed"
+                            Template="{DynamicResource DockableContentsTabControlTemplate}"
+                            IsSynchronizedWithCurrentItem="True" TabStripPlacement="Bottom" />
+            </Grid>
+        </Border>
+        <DockPanel.Style>
+            <Style TargetType="{x:Type DockPanel}">
+                <Style.Triggers>
+                    <Trigger Property="IsFocused" Value="True">
+                        <Setter Property="TextBlock.FontSize" Value="20">
+                            <!--<Setter.Value>
+								<LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1">
+									<GradientStop Color="{DynamicResource {x:Static Colors.Yellow}}" Offset="0"/>
+									<GradientStop Color="{DynamicResource {x:Static SystemColors.ActiveCaptionColorKey}}" Offset="1"/>
+								</LinearGradientBrush>
+							</Setter.Value>-->
+                        </Setter>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </DockPanel.Style>
+    </DockPanel>
+</custom:Pane>

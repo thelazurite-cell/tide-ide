@@ -1,0 +1,80 @@
+﻿<controls:SharpWindow x:Class="TAF.AutomationTool.Ui.ProjectWindow"
+                      x:Name="Window"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:controls="clr-namespace:TestAutomation.Tide.Ui.Controls;assembly=TestAutomation.Tide.Ui.Controls"
+                      FontFamily="{DynamicResource {x:Static SystemFonts.MessageFontFamily}}"
+                      Background="#D3CDCD"
+                      xmlns:local="clr-namespace:TAF.AutomationTool.Ui"
+                      xmlns:dl="clr-namespace:DockingLibrary;assembly=DockingLibrary"
+                      xmlns:fa="http://schemas.fontawesome.io/icons/"
+                      xmlns:activities="clr-namespace:TAF.AutomationTool.Ui.Activities"
+                      mc:Ignorable="d"
+                      Title="TIDE - Project Window" Height="350" Width="525"
+                      ContentRendered="ProjectWindow_OnContentRendered">
+    <controls:SharpWindow.ToolbarTemplate>
+        <Menu Background="Transparent" Margin="5">
+            <MenuItem Header="File">
+                <MenuItem Header="New" />
+                <MenuItem Header="Exit" />
+            </MenuItem>
+            <MenuItem Header="Edit" />
+            <MenuItem Header="Window">
+                <MenuItem Header="Explorer" />
+                <MenuItem Header="Output" />
+                <MenuItem Header="Property" />
+                <MenuItem Header="ToDoList" />
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About TIDE" />
+            </MenuItem>
+        </Menu>
+    </controls:SharpWindow.ToolbarTemplate>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+        <DockPanel>
+
+            <ToolBar DockPanel.Dock="Top" Grid.Row="0" Grid.ColumnSpan="3">
+                <Button Name="CreateItemButton" Click="CreateItemButton_OnClick">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="Plus" Width="16" Height="16" />
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Add Item</TextBlock>
+                    </StackPanel>
+                </Button>
+            </ToolBar>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="15*" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="80*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" /> -->
+            </Grid>
+            <dl:DockManager Name="DockManager" DockPanel.Dock="Bottom" />
+        </DockPanel>
+        <StatusBar Grid.Row="1" Background="#D3CDCD">
+            <StatusBarItem DockPanel.Dock="Right">
+                <StackPanel Orientation="Horizontal">
+                    <Separator Width="1" Height="16" BorderBrush="Gray" BorderThickness="1" />
+                    <fa:ImageAwesome Icon="Git" Height="16" Width="16" Margin="0,0,5,0" />
+                    <TextBlock Name="GitBranch">[No VCS]</TextBlock>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock>Ready</TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static activities:ProjectWindowCommands.InitializeGoToFile}"
+                        Executed="GoToFileCommandBinding_OnExecuted" />
+        <CommandBinding Command="{x:Static activities:ProjectWindowCommands.InitializeSearchEverywhere}"
+                        Executed="SearchEverywhereCommandBinding_OnExecuted" />
+    </Window.CommandBindings>
+</controls:SharpWindow>
